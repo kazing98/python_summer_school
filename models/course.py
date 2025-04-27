@@ -63,8 +63,13 @@ class Course:
         if not all(isinstance(item, str) for item in present_student_ids):
             raise ValueError("All IDs in Present Student ID should be a string/text.")
 
+        if len(self.students) < len(present_student_ids):
+            raise ValueError("Total present student exceeds that of enrolled students.")
+        else:
+            for id in present_student_ids:
+                if id not in self.students:
+                    raise ValueError(f"Student with ID {id} not enrolled in this course.")
 
-        pass
 
     def assign_grade(self, student_id: str, grade: float):
         """Assign a grade to a student"""
@@ -73,7 +78,16 @@ class Course:
         # 2. Validate that grade is a number
         # 3. Validate that grade is between 0 and 100
         # 4. Assign the grade to the student
-        pass
+        if student_id not in self.students:
+            raise ValueError(f"Student with ID {student_id} is not enrolled in this course.")
+
+        if not isinstance(grade, float):
+            raise ValueError("Grade should be a number.")
+
+        if not (0 <= grade <= 100):
+            raise ValueError("Grade should be a number between 0 to 100.")
+
+        self.grades[student_id] = grade
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert course data to dictionary"""

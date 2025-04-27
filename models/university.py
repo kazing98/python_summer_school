@@ -38,7 +38,23 @@ class University:
         # 3. Add student to course's student set
         # 4. Update student's enrolled courses
         # 5. Return True if successful, False otherwise
-        pass
+
+        if student_id not in self.students:
+            raise ValueError("Student ID doesn't exists")
+
+        if course_id not in self.courses:
+            raise ValueError("Course ID doesn't exists")
+
+        for k,v in self.courses.items():
+            if k==course_id:
+                if v.max_capacity > len(v.students):
+                    print(len(v.students))
+                    v.students.add(student_id)
+                    self.students[student_id].enroll_in_course(course_id)
+                    return True
+
+        return False
+
     
     def assign_teacher(self, teacher_id: str, course_id: str) -> bool:
         """Assign a teacher to a course"""
@@ -48,7 +64,25 @@ class University:
         # 3. Set new teacher_id for course
         # 4. Add course to teacher's assigned courses
         # 5. Return True if successful, False otherwise
-        pass
+        if teacher_id not in self.teachers:
+            raise ValueError("Teacher ID doesn't exists")
+
+        if course_id not in self.courses:
+            raise ValueError("Course ID doesn't exists")
+
+        for k,v in self.courses.items():
+            if k == course_id:
+                if v.teacher_id:
+                    self.teachers[v.teacher_id].remove_course(course_id)
+                    self.teachers[teacher_id].assign_course(course_id)
+                    v.teacher_id = teacher_id
+                    return True
+                else:
+                    self.teachers[teacher_id].assign_course(course_id)
+                    v.teacher_id = teacher_id
+                    return True
+
+        return False
     
     def withdraw_student(self, student_id: str, course_id: str) -> bool:
         """Withdraw a student from a course"""
@@ -58,7 +92,19 @@ class University:
         # 3. Remove student from course's student set
         # 4. Update student's enrolled courses
         # 5. Return True if successful, False otherwise
-        pass
+        if student_id not in self.students:
+            raise ValueError("Student ID doesn't exists")
+
+        if course_id not in self.courses:
+            raise ValueError("Course ID doesn't exists")
+
+        for k, v in self.courses.items():
+            if student_id in v.students:
+                v.students.discard(student_id)
+                self.students[student_id].withdraw_from_course(course_id)
+                return True
+
+        return False
     
     def get_course_roster(self, course_id: str) -> Optional[List[Dict]]:
         """Get a list of students enrolled in a course"""

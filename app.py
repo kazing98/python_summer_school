@@ -101,6 +101,7 @@ def handle_courses():
                             set(data['materials_required']))
 
             course_id = university.add_course(course)
+
             return jsonify({"course_id": course_id}), 201
         except (KeyError, ValueError) as e:
             return jsonify({"error": str(e)}), 400
@@ -119,7 +120,25 @@ def handle_enrollment(course_id, student_id):
     # For DELETE:
     # 1. Try to withdraw student from course
     # 2. Return success/failure message
-    pass
+    if request.method == 'POST':
+        try:
+            if university.enroll_student(student_id, course_id):
+                return jsonify({"enrollment": "Enrollment done successfully."}), 201
+            else:
+                raise ValueError("Max capacity reached. Enrollment cannot be done.")
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+
+    elif request.method == 'DELETE':
+        try:
+            if university.withdraw_student(student_id, course_id):
+                return jsonify({"withdrawn": "Enrollment withdrawn successfully."}), 201
+            else:
+                raise ValueError("Student not enrolled to the course.")
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+
+    return None
 
 # Course assignment endpoints
 @app.route('/courses/<course_id>/teacher/<teacher_id>', methods=['POST'])
@@ -128,7 +147,15 @@ def assign_teacher_to_course(course_id, teacher_id):
     # TODO: Implement assign_teacher_to_course endpoint
     # 1. Try to assign teacher to course
     # 2. Return success/failure message
-    pass
+    if request.method == 'POST':
+        try:
+            if university.assign_teacher(teacher_id, course_id):
+                return jsonify({"assignment": f"Teacher assigned to {course_id} course_id successfully."}), 201
+
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+    return None
+
 
 # Attendance endpoints
 @app.route('/courses/<course_id>/attendance', methods=['POST'])
@@ -138,7 +165,17 @@ def record_attendance(course_id):
     # 1. Get JSON data with date and present students
     # 2. Try to record attendance
     # 3. Return success/failure message
-    pass
+    if request.method == 'POST':
+        data = request.get_json()
+        try:
+            if course_id in university.courses:
+                university.courses[course_id].take_attendance(data["date"], set(data["present_students"]))
+
+            return jsonify({"attendance": f"Attendance taken successfully for {data["date"]}"}), 201
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+    return None
+
 
 # Grade endpoints
 @app.route('/courses/<course_id>/grades/<student_id>', methods=['POST'])

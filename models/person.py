@@ -99,7 +99,7 @@ class Teacher(Person):
         """Remove a course assignment from the teacher"""
         # TODO: Implement remove_course method
         # Remove the course_id from the teacher's assigned_courses set
-        return self.assigned_courses.remove(course_id)
+        return self.assigned_courses.discard(course_id)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert teacher data to dictionary"""
