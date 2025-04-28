@@ -94,11 +94,19 @@ def handle_courses():
     if request.method == 'POST':
         data = request.get_json()
         try:
-            course = Course(data['name'],
-                            data['max_capacity'],
-                            data['course_type'],
-                            data['difficulty_level'],
-                            set(data['materials_required']))
+            course = None
+            if data['course_type'] == 'math':
+                course = Course(data['name'],
+                                data['max_capacity'],
+                                data['course_type'],
+                                data['difficulty_level'])
+
+            elif data['course_type'] == 'art':
+                course = Course(data['name'],
+                                data['max_capacity'],
+                                data['course_type'],
+                                data['difficulty_level'],
+                                set(data['materials_required']))
 
             course_id = university.add_course(course)
 
@@ -169,9 +177,9 @@ def record_attendance(course_id):
         data = request.get_json()
         try:
             if course_id in university.courses:
-                university.courses[course_id].take_attendance(data["date"], set(data["present_students"]))
+                university.record_attendance(course_id, data["date"], set(data["present_students"]))
+                return jsonify({"attendance": f"Attendance taken successfully for {data["date"]}"}), 201
 
-            return jsonify({"attendance": f"Attendance taken successfully for {data["date"]}"}), 201
         except (KeyError, ValueError) as e:
             return jsonify({"error": str(e)}), 400
     return None
@@ -185,7 +193,45 @@ def assign_grade(course_id, student_id):
     # 1. Get JSON data with grade
     # 2. Try to assign grade
     # 3. Return success/failure message
-    pass
+    if request.method == 'POST':
+        data = request.get_json()
+        try:
+            if course_id in university.courses and university.assign_grade(course_id, student_id, data['grade']):
+                return jsonify({"grade": f"Grade updated successfully for {student_id}"}), 201
+            else:
+                raise ValueError("Something went wrong")
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+    return None
+
+# Get all grades for a student
+@app.route('/students/<student_id>/grades', methods=['GET'])
+def get_all_grades(student_id):
+    """Getting all grades scored in different subjects by a student"""
+    if request.method == 'GET':
+        try:
+            if student_id in university.students:
+                result = university.get_student_grades(student_id)
+                return jsonify(result), 201
+            else:
+                raise ValueError("Student ID not found")
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+    return None
+
+# Get all grades for a course
+@app.route('/course/<course_id>/grades', methods=['GET'])
+def get_all_course_grades(course_id):
+    """Getting all grades scored in different subjects by a student"""
+    if request.method == 'GET':
+        try:
+            if course_id in university.courses:
+                return jsonify(university.get_course_grades(course_id)), 201
+            else:
+                raise ValueError("Course ID not found")
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": str(e)}), 400
+    return None
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

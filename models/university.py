@@ -136,7 +136,13 @@ class University:
         # 1. Check if course_id exists
         # 2. Try to record attendance using course's take_attendance method
         # 3. Return True if successful, False otherwise
-        pass
+        if not course_id in self.courses:
+            raise ValueError("Course doesn't exists.")
+
+        if self.courses[course_id].take_attendance(date, present_student_ids):
+            return True
+        else:
+            return False
     
     def assign_grade(self, course_id: str, student_id: str, grade: float) -> bool:
         """Assign a grade to a student for a course"""
@@ -144,14 +150,26 @@ class University:
         # 1. Check if course_id and student_id exist
         # 2. Try to assign grade using course's assign_grade method
         # 3. Return True if successful, False otherwise
-        pass
-            
+        if not student_id  in self.students:
+            raise ValueError("Student ID doesn't exists")
+
+        if not course_id in self.courses:
+            raise ValueError("Course ID doesn't exists")
+
+        if self.courses[course_id].assign_grade(student_id, grade):
+            return True
+        else:
+            return False
+
     def get_course_grades(self, course_id: str) -> Optional[Dict[str, float]]:
         """Get all grades for a course"""
         # TODO: Implement get_course_grades method
         # 1. Check if course_id exists
         # 2. Return copy of course's grades dictionary
-        pass
+        if not course_id in self.courses:
+            raise ValueError("Course ID doesn't exists")
+
+        return self.courses[course_id].grades
     
     def get_student_grades(self, student_id: str) -> Optional[Dict[str, float]]:
         """Get all grades for a student across all courses"""
@@ -159,4 +177,12 @@ class University:
         # 1. Check if student_id exists
         # 2. Get student's grades from all enrolled courses
         # 3. Return dictionary mapping course IDs to grades
-        pass
+        if not student_id in self.students:
+            raise ValueError("Student ID doesn't exists")
+
+        student_grade = dict()
+
+        for course_id in self.students[student_id].enrolled_courses:
+            student_grade[course_id] = self.courses[course_id].grades[student_id]
+
+        return student_grade
