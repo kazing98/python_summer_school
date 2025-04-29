@@ -1,0 +1,790 @@
+{
+	"info": {
+		"_postman_id": "555f5169-6cc0-40d2-8357-2c33b3225a2a",
+		"name": "PythonSummerSchool",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39723833"
+	},
+	"item": [
+		{
+			"name": "Teacher, Course Initialization",
+			"item": [
+				{
+					"name": "Adding Teacher Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('teacher_id', pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test Teacher2\",\r\n    \"contact_info\": {\r\n        \"email\": \"test_teacher2@gmail.com\",\r\n        \"phone\": \"+49-555-3032\"\r\n    },\r\n    \"specializations\" : \"Maths\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhostpython}}/teachers",
+							"host": [
+								"{{localhostpython}}"
+							],
+							"path": [
+								"teachers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adding Course Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('course_id', pm.response.json().course_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Probability 1\",\r\n    \"course_type\": \"math\",\r\n    \"max_capacity\": 10,\r\n    \"difficulty_level\":\"Beginner\"\r\n    // \"materials_required\": [\"pencil\", \"paper\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhostpython}}/courses",
+							"host": [
+								"{{localhostpython}}"
+							],
+							"path": [
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Course Assignment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('student_id', pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test Student2\",\r\n    \"contact_info\": {\r\n        \"email\": \"test_studen1@gmail.com\",\r\n        \"phone\": \"+49-555-3031\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhostpython}}/courses/{{course_id}}/teacher/{{teacher_id}}",
+							"host": [
+								"{{localhostpython}}"
+							],
+							"path": [
+								"courses",
+								"{{course_id}}",
+								"teacher",
+								"{{teacher_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Adding Student Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.collectionVariables.set('student_id', pm.response.json().id);\r",
+							"\r",
+							"// Extract the student_ID from the response\r",
+							"let response = pm.response.json();\r",
+							"let studentID = response.id;   // Adjust 'id' if your field name is different\r",
+							"\r",
+							"// Get existing student_id_list from Collection Variables\r",
+							"let studentIDList = pm.collectionVariables.get(\"student_id_list\");\r",
+							"\r",
+							"if (!studentIDList) {\r",
+							"    studentIDList = [];\r",
+							"} else {\r",
+							"    studentIDList = JSON.parse(studentIDList);\r",
+							"}\r",
+							"\r",
+							"// Add the new student_ID\r",
+							"if (studentID !== undefined && studentID !== null) {\r",
+							"    studentIDList.push(studentID);\r",
+							"}\r",
+							"\r",
+							"// Save updated list back into collection variables\r",
+							"pm.collectionVariables.set(\"student_id_list\", JSON.stringify(studentIDList));\r",
+							"\r",
+							"// Log it in Postman console for debugging\r",
+							"console.log(\"Updated student_id_list:\", studentIDList);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Test Student3\",\r\n    \"contact_info\": {\r\n        \"email\": \"test_studen1@gmail.com\",\r\n        \"phone\": \"+49-555-3031\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhostpython}}/students",
+					"host": [
+						"{{localhostpython}}"
+					],
+					"path": [
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enrollment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the student_id_list\r",
+							"let studentIDList = JSON.parse(pm.collectionVariables.get(\"student_id_list\") || \"[]\");\r",
+							"\r",
+							"// Get current index (initialize if not set)\r",
+							"let currentIndex = parseInt(pm.collectionVariables.get(\"current_student_index\") || \"0\");\r",
+							"\r",
+							"// Check if still inside list\r",
+							"if (currentIndex < studentIDList.length) {\r",
+							"    // Set the current student_id for this request\r",
+							"    let currentStudentID = studentIDList[currentIndex];\r",
+							"    pm.variables.set(\"curr_student_id\", currentStudentID);\r",
+							"\r",
+							"    // Increment index for next time\r",
+							"    pm.collectionVariables.set(\"current_student_index\", currentIndex + 1);\r",
+							"} else {\r",
+							"    console.log(\"All student IDs have been used.\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhostpython}}/courses/{{course_id}}/students/{{curr_student_id}}",
+					"host": [
+						"{{localhostpython}}"
+					],
+					"path": [
+						"courses",
+						"{{course_id}}",
+						"students",
+						"{{curr_student_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Grading",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the student_id_list\r",
+							"let studentIDList = JSON.parse(pm.collectionVariables.get(\"student_id_list\") || \"[]\");\r",
+							"\r",
+							"// Get current index (initialize if not set)\r",
+							"let currentIndex = parseInt(pm.collectionVariables.get(\"current_student_index\") || \"0\");\r",
+							"\r",
+							"// Check if still inside list\r",
+							"if (currentIndex < studentIDList.length) {\r",
+							"    // Set the current student_id for this request\r",
+							"    let currentStudentID = studentIDList[currentIndex];\r",
+							"    pm.variables.set(\"curr_student_id\", currentStudentID);\r",
+							"\r",
+							"    // Increment index for next time\r",
+							"    pm.collectionVariables.set(\"current_student_index\", currentIndex + 1);\r",
+							"} else {\r",
+							"    console.log(\"All student IDs have been used.\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"grade\": 90.5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhostpython}}/courses/{{course_id}}/grades/aa53200f-4959-47d3-a05d-ad38c70d8684",
+					"host": [
+						"{{localhostpython}}"
+					],
+					"path": [
+						"courses",
+						"{{course_id}}",
+						"grades",
+						"aa53200f-4959-47d3-a05d-ad38c70d8684"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Grades for a student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the student_id_list\r",
+							"let studentIDList = JSON.parse(pm.collectionVariables.get(\"student_id_list\") || \"[]\");\r",
+							"\r",
+							"// Get current index (initialize if not set)\r",
+							"let currentIndex = parseInt(pm.collectionVariables.get(\"current_student_index\") || \"0\");\r",
+							"\r",
+							"// Check if still inside list\r",
+							"if (currentIndex < studentIDList.length) {\r",
+							"    // Set the current student_id for this request\r",
+							"    let currentStudentID = studentIDList[currentIndex];\r",
+							"    pm.variables.set(\"curr_student_id\", currentStudentID);\r",
+							"\r",
+							"    // Increment index for next time\r",
+							"    pm.collectionVariables.set(\"current_student_index\", currentIndex + 1);\r",
+							"} else {\r",
+							"    console.log(\"All student IDs have been used.\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhostpython}}/students/3395614c-4ca5-4446-af6f-714d0f9503e1/grades",
+					"host": [
+						"{{localhostpython}}"
+					],
+					"path": [
+						"students",
+						"3395614c-4ca5-4446-af6f-714d0f9503e1",
+						"grades"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Grades for a course",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the student_id_list\r",
+							"let studentIDList = JSON.parse(pm.collectionVariables.get(\"student_id_list\") || \"[]\");\r",
+							"\r",
+							"// Get current index (initialize if not set)\r",
+							"let currentIndex = parseInt(pm.collectionVariables.get(\"current_student_index\") || \"0\");\r",
+							"\r",
+							"// Check if still inside list\r",
+							"if (currentIndex < studentIDList.length) {\r",
+							"    // Set the current student_id for this request\r",
+							"    let currentStudentID = studentIDList[currentIndex];\r",
+							"    pm.variables.set(\"curr_student_id\", currentStudentID);\r",
+							"\r",
+							"    // Increment index for next time\r",
+							"    pm.collectionVariables.set(\"current_student_index\", currentIndex + 1);\r",
+							"} else {\r",
+							"    console.log(\"All student IDs have been used.\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhostpython}}/course/{{course_id}}/grades",
+					"host": [
+						"{{localhostpython}}"
+					],
+					"path": [
+						"course",
+						"{{course_id}}",
+						"grades"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Taking Attendance",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"date\": \"2025-04-08\",\r\n  \"present_students\": {{student_id_list}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhostpython}}/courses/{{course_id}}/attendance",
+					"host": [
+						"{{localhostpython}}"
+					],
+					"path": [
+						"courses",
+						"{{course_id}}",
+						"attendance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Withdrawing from a course",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/courses/{{course_id}}/students/{{student_id}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"courses",
+						"{{course_id}}",
+						"students",
+						"{{student_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetching Student from studentID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/students/{{student_id}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"students",
+						"{{student_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All Teachers Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/teachers",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"teachers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All Course Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/courses",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Student_ID List Env Var",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Reset the student_id_list to empty\r",
+							"pm.collectionVariables.set(\"student_id_list\", JSON.stringify([]));\r",
+							"console.log(\"student_id_list has been reset to empty.\");\r",
+							"\r",
+							"// Reset current index to 0\r",
+							"pm.collectionVariables.set(\"current_student_index\", 0);\r",
+							"console.log(\"Reset current_student_index to 0 ✅\");\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/get",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "student_id",
+			"value": ""
+		},
+		{
+			"key": "course_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "teacher_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "student_id_list",
+			"value": ""
+		},
+		{
+			"key": "current_student_index",
+			"value": ""
+		},
+		{
+			"key": "curr_student_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "localhostpython",
+			"value": "http://127.0.0.1:5000",
+			"type": "string"
+		}
+	]
+}
